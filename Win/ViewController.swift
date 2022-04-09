@@ -41,6 +41,19 @@ class ViewController: UIViewController {
     return button
   }()
   
+  private lazy var clearButton: UIButton = {
+    var config = UIButton.Configuration.plain()
+    config.title = "Clear"
+    config.titleAlignment = .center
+    config.baseForegroundColor = UIColor.systemRed
+    let button = UIButton(configuration: config, primaryAction: UIAction() { _ in
+      print("Clear console")
+      self.textView.text = ""
+    })
+    button.translatesAutoresizingMaskIntoConstraints = false
+    return button
+  }()
+  
   private lazy var textView: UITextView = {
     let textView = UITextView()
     textView.text = """
@@ -110,6 +123,7 @@ Raw Events
     view.addSubview(settingsButton)
     view.addSubview(textView)
     view.addSubview(sendButton)
+    view.addSubview(clearButton)
     
     NSLayoutConstraint.activate([
       apiLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0),
@@ -127,7 +141,10 @@ Raw Events
       sendButton.leadingAnchor.constraint(equalTo: apiLabel.leadingAnchor),
       sendButton.trailingAnchor.constraint(equalTo: settingsButton.trailingAnchor),
       sendButton.topAnchor.constraint(equalTo: textView.bottomAnchor, constant: 24.0),
-      sendButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.0)
+      
+      clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      clearButton.topAnchor.constraint(equalTo: sendButton.bottomAnchor, constant: 18.0),
+      clearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12.0)
     ])
   }
 
@@ -135,6 +152,9 @@ Raw Events
     config.showsActivityIndicator = true
     config.title = ""
     self.sendButton.configuration = config
+    
+    let shared = UserDefaults.standard
+    print(shared.string(forKey: "to"), shared.string(forKey: "from"))
   }
 
 }
