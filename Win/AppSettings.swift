@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import Alamofire
 
 final class AppSettings {
   static let `default` = AppSettings()
   private let persistance = UserDefaults.standard
   
-  var headers: [String: String] = [
+  var headers: HTTPHeaders = [
     "accept": "application/json",
     "Content-Type": "application/json"
   ]
@@ -30,14 +31,14 @@ final class AppSettings {
 
 extension AppSettings {
   enum EndPoint {
-    static let baseURL = URL(string: "https://api.example.kz/v1/")!
+    static let baseURL = URL(string: "http://b247-178-91-253-72.ngrok.io")!
     
     case sendMessage
     
     var url: URL {
       switch self {
       case .sendMessage:
-        return EndPoint.baseURL.appendingPathComponent("send")
+        return EndPoint.baseURL.appendingPathComponent("/mail")
       }
     }
   }

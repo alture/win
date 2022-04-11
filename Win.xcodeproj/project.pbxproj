@@ -13,6 +13,8 @@
 		74737E3C2800217700641129 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74737E3A2800217700641129 /* LaunchScreen.storyboard */; };
 		74737E442800350900641129 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74737E432800350900641129 /* SettingsViewController.swift */; };
 		74737E4628015EE500641129 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74737E4528015EE400641129 /* AppSettings.swift */; };
+		74737E48280162B900641129 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74737E47280162B800641129 /* Service.swift */; };
+		74737E4B280163B000641129 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 74737E4A280163B000641129 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,7 @@
 		74737E3D2800217700641129 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74737E432800350900641129 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		74737E4528015EE400641129 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		74737E47280162B800641129 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74737E4B280163B000641129 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +67,7 @@
 				74737E3D2800217700641129 /* Info.plist */,
 				74737E432800350900641129 /* SettingsViewController.swift */,
 				74737E4528015EE400641129 /* AppSettings.swift */,
+				74737E47280162B800641129 /* Service.swift */,
 			);
 			path = Win;
 			sourceTree = "<group>";
@@ -83,6 +88,9 @@
 			dependencies = (
 			);
 			name = Win;
+			packageProductDependencies = (
+				74737E4A280163B000641129 /* Alamofire */,
+			);
 			productName = Win;
 			productReference = 74737E2C2800217500641129 /* Win.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +119,9 @@
 				Base,
 			);
 			mainGroup = 74737E232800217500641129;
+			packageReferences = (
+				74737E49280163B000641129 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = 74737E2D2800217500641129 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -139,6 +150,7 @@
 			files = (
 				74737E342800217500641129 /* ViewController.swift in Sources */,
 				74737E302800217500641129 /* AppDelegate.swift in Sources */,
+				74737E48280162B900641129 /* Service.swift in Sources */,
 				74737E4628015EE500641129 /* AppSettings.swift in Sources */,
 				74737E442800350900641129 /* SettingsViewController.swift in Sources */,
 			);
@@ -350,6 +362,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		74737E49280163B000641129 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		74737E4A280163B000641129 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74737E49280163B000641129 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 74737E242800217500641129 /* Project object */;
 }

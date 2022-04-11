@@ -51,6 +51,7 @@ final class SettingsViewController: UIViewController, UITextFieldDelegate {
       let appSettings = AppSettings.default
       appSettings.from = self.users[0].emailAddres
       appSettings.to = self.users[1].emailAddres
+
       self.navigationController?.popViewController(animated: true)
     })
     button.translatesAutoresizingMaskIntoConstraints = false

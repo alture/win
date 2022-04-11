@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import Combine
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, URLSessionTaskDelegate {
+  
+  var webSocketTask: URLSessionWebSocketTask? = nil
   
   private lazy var apiLabel: UILabel = {
     let label = UILabel()
@@ -56,36 +59,36 @@ class ViewController: UIViewController {
   
   private lazy var textView: UITextView = {
     let textView = UITextView()
-    textView.text = """
-Date: Tue, 15 Mar 2022 11:28:10 +0600 (ALMT)
-From: user@fornix.nb
-To: user@fornix.nb
-Subject: Windows Groups Changed
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Incident Detail
-Incident ID: https://10.10.132.5/phoenix/html/incidents/3251549
-Incident Time: Tue Mar 15 11:28:00 ALMT 2022
-Event Severity: 7
-Incident Count: 1
-Incident Category: Change/UserAccount
-Rule
-Rule Name: Windows Groups Changed
-Remediation:=20
-Rule Description:=20
-Incident Source
-Hostname: ms.STAT.KZ
-Source IP:=20
-Incident Target
-Incident Target: Host Name: ms.HACK.KZ
-User: admin_jack
-Domain: HACK
-Target User Group: Sector14 Target Domain: STAT
-Incident Title
-Incident Title: Windows group Sector14 modified by admin_jack on ms.HACK.KZ Organization
-Organization Name: Super
-Raw Events
-"""
+//    textView.text = """
+//Date: Tue, 15 Mar 2022 11:28:10 +0600 (ALMT)
+//From: user@fornix.nb
+//To: user@fornix.nb
+//Subject: Windows Groups Changed
+//Content-Type: text/plain;charset=utf-8
+//Content-Transfer-Encoding: quoted-printable
+//Incident Detail
+//Incident ID: https://10.10.132.5/phoenix/html/incidents/3251549
+//Incident Time: Tue Mar 15 11:28:00 ALMT 2022
+//Event Severity: 7
+//Incident Count: 1
+//Incident Category: Change/UserAccount
+//Rule
+//Rule Name: Windows Groups Changed
+//Remediation:=20
+//Rule Description:=20
+//Incident Source
+//Hostname: ms.STAT.KZ
+//Source IP:=20
+//Incident Target
+//Incident Target: Host Name: ms.HACK.KZ
+//User: admin_jack
+//Domain: HACK
+//Target User Group: Sector14 Target Domain: STAT
+//Incident Title
+//Incident Title: Windows group Sector14 modified by admin_jack on ms.HACK.KZ Organization
+//Organization Name: Super
+//Raw Events
+//"""
     textView.layer.borderColor = UIColor.label.cgColor
     textView.layer.borderWidth = 1.0
     textView.layer.cornerRadius = 5.0
@@ -108,6 +111,7 @@ Raw Events
   override func viewDidLoad() {
     super.viewDidLoad()
     setupView()
+    createWebSocketTask()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -150,12 +154,81 @@ Raw Events
 
   func didTapButton() {
     config.showsActivityIndicator = true
+    sendButton.isEnabled = false
     config.title = ""
     self.sendButton.configuration = config
-    
-    let shared = UserDefaults.standard
-    print(shared.string(forKey: "to"), shared.string(forKey: "from"))
+    webSocketTask?.resume()
+    receive()
+    Service.sendMessage(from: AppSettings.default.from ?? "", to: AppSettings.default.to ?? "") { result in
+      switch result {
+      case .success(_):
+        if let _ = self.webSocketTask {
+          self.sendPing()
+          self.receive()
+        } else {
+          print("error")
+        }
+      default: break
+      }
+    }
+
+  }
+  
+  func createWebSocketTask() {
+    let urlSession = URLSession(configuration: .default)
+    webSocketTask = urlSession.webSocketTask(with: URL(string: "ws://b247-178-91-253-72.ngrok.io/ws/mail?email=\(AppSettings.default.to!)")!)
+    self.webSocketTask?.delegate = self
+  }
+  
+  func receive() {
+    webSocketTask?.receive { result in
+      switch result {
+      case .failure(let error):
+        print(error.localizedDescription)
+      case .success(let message):
+        switch message {
+        case .string(let text):
+          DispatchQueue.main.async {
+            self.textView.text += text
+          }
+        case .data(let data):
+          print("Received data: \(data)")
+        @unknown default:
+          break
+        }
+      }
+      
+      self.receive()
+    }
+  }
+  
+  func sendPing() {
+    webSocketTask?.sendPing { (error) in
+      if let error = error {
+        print("Sending PING failed: \(error)")
+      }
+   
+      DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        self.sendPing()
+      }
+    }
   }
 
 }
 
+extension ViewController {
+  func urlSession(_ session: URLSession,
+    webSocketTask: URLSessionWebSocketTask,
+                  didOpenWithProtocol protocol: String?) {
+      print("Connected")
+  }
+  
+  func urlSession(_ session: URLSession,
+    webSocketTask: URLSessionWebSocketTask,
+    didCloseWith
+    closeCode: URLSessionWebSocketTask.CloseCode,
+                  reason: Data?) {
+    print("disconnect")
+  }
+
+}
